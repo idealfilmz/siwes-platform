@@ -40,7 +40,7 @@ export const LecturerDashboard = () => {
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-2xl font-semibold mb-6">Lecturer Dashboard</h1>
+      <h1 className="text-sm font-bold mb-6 text-right">Welcome back, Dr. Sulyman </h1>
       <div className="mb-4">
         <input
           type="text"

@@ -25,11 +25,11 @@ export const Login = () => {
             <h1 className="text-2xl font-semibold mb-6 text-center">Login</h1>
             <form onSubmit={handleSubmit}>
                <div className="mb-4">
-                  <label htmlFor="username" className="block text-gray-700 mb-2">Username</label>
+                  <label htmlFor="username" className="block text-gray-700 mb-2">Staff ID</label>
                   <input
                      id="username"
                      type="text"
-                     placeholder="Enter username"
+                     placeholder="Enter staff id"
                      value={username}
                      onChange={handleUsernameChange}
                      className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"

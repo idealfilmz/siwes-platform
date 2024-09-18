@@ -1,7 +1,7 @@
 
 import React, { useState } from "react";
 
-export const Login = () => {
+export const SupLogin = () => {
    const [username, setUsername] = useState("");
    const [password, setPassword] = useState("");
 
