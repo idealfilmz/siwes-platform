@@ -34,7 +34,7 @@ const navigate  = useNavigate()
          <div>
             </div>
 
-<button className="shadow-lg p-2 pr-7 pl-7  rounded-xl text-gray-100 bg-green-600 m-3">Signup</button>
+<button onClick={()=>navigate("/NewPage")} className="shadow-lg p-2 pr-7 pl-7  rounded-xl text-gray-100 bg-green-600 m-3">Signup</button>
 <button onClick={()=>navigate("/nav")} className="shadow-lg p-2 pr-7 pl-7 bg-blue-500 rounded-xl text-gray-100 m-3">Login</button>
          </div>
       </center>
