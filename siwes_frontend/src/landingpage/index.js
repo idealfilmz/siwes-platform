@@ -38,7 +38,7 @@ export const LandingPage = () => {
             </div>
             <center>
                <div className="mt-32">
-                  <h3 style={{ fontWeight: "500" }} className="text-white text-4xl font-extralight m-1 p-1">
+                  <h3 style={{ fontWeight: "500" }} className="text-blue-500 text-4xl font-extralight m-1 p-1">
                      Welcome to SIWES Assessment platform
                   </h3>
                   <p style={{ wordSpacing: 2 }} className="text-white font-semibold">Improving Assessment Quality</p>

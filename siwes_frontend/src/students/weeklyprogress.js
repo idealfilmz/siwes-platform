@@ -5,7 +5,7 @@ export const WeekLyName = () => {
     <div className="p-4">
       <div className="bg-blue-100 border border-blue-200 rounded-lg p-4 mb-4">
         <marquee className="text-center text-blue-600 text-lg font-semibold">
-          You are in week 8, please input the week's progress via the following:
+          You are in week 8, please input the week's progress bellow:
         </marquee>
       </div>
       <textarea
