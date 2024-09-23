@@ -25,8 +25,6 @@ function App() {
 <Route path='' element={<LandingPage/>} />
 {/* stand alone */}
  <Route path="/register" element={<Register />} />
-
-
 {/* stand alone */}
           <Route path="nav" element={<BottomNav />} />
           <Route path="/newpage" element={<NewPage />} />
