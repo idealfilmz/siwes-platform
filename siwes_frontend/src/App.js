@@ -22,20 +22,22 @@ function App() {
     <Router>
       <div>
         <Routes>
-<Route path='/landing' element={<LandingPage/>} />
- <Route path="/" element={<Register />} />
+<Route path='' element={<LandingPage/>} />
+ <Route path="/register" element={<Register />} />
           <Route path="nav" element={<BottomNav />} />
+          
           <Route path="/newpage" element={<NewPage />} />
           <Route path ="login" element={< SupLogin/>} />
           <Route path ="SignUp" element={< SignUp/>} />
           <Route path="supervisor-login" element={<Login />} />
           <Route path='/supervisor' element={<SupervisorBar />} >
             <Route path="view" element={<LecturerOverview />} />
-            <Route path="LecturerDashboard" element={<LecturerDashboard />} />
+            <Route path="" element={<LecturerDashboard />} />
           </Route>
           <Route path="*" element={<Notfound />} />
+          {/* Student dashboard */}
           <Route path='/side' element={<MultiLevelSidebar />} >
-            <Route path="StudentDashboard" element={<StudentDashboard />} />
+            <Route path="" element={<StudentDashboard />} />
             <Route path='wekk' element={<WeekLyName />} />
           </Route>
         </Routes>

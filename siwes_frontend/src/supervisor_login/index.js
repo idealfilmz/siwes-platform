@@ -1,9 +1,11 @@
 
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const SupLogin = () => {
    const [username, setUsername] = useState("");
    const [password, setPassword] = useState("");
+   const navigate  = useNavigate()
 
    const handleUsernameChange = (event) => {
       setUsername(event.target.value);
@@ -48,6 +50,7 @@ export const SupLogin = () => {
                   />
                </div>
                <button
+               onClick={()=>navigate("/side")}
                   type="submit"
                   className="w-full py-2 bg-gray-900 text-white font-semibold rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
                >

@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-
+import { useNavigate } from "react-router-dom";
 export const Login = () => {
    const [username, setUsername] = useState("");
    const [password, setPassword] = useState("");
+   const navigate  = useNavigate()
 
    const handleUsernameChange = (event) => {
       setUsername(event.target.value);
@@ -18,7 +19,6 @@ export const Login = () => {
       console.log("Username:", username);
       console.log("Password:", password);
    };
-
    return (
       <div className="flex items-center justify-center min-h-screen bg-gray-100">
          <div className="w-full max-w-sm p-8 bg-white shadow-lg rounded-lg">
@@ -47,6 +47,7 @@ export const Login = () => {
                   />
                </div>
                <button
+               onClick={()=>navigate('/supervisor')}
                   type="submit"
                   className="w-full py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
                >
