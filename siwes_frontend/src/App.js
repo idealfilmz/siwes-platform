@@ -23,9 +23,10 @@ function App() {
       <div>
         <Routes>
 <Route path='' element={<LandingPage/>} />
+{/* stand alone */}
  <Route path="/register" element={<Register />} />
+{/* stand alone */}
           <Route path="nav" element={<BottomNav />} />
-          
           <Route path="/newpage" element={<NewPage />} />
           <Route path ="login" element={< SupLogin/>} />
           <Route path ="SignUp" element={< SignUp/>} />
@@ -36,6 +37,8 @@ function App() {
           </Route>
           <Route path="*" element={<Notfound />} />
           {/* Student dashboard */}
+
+          {/* mutiplex */}
           <Route path='/side' element={<MultiLevelSidebar />} >
             <Route path="" element={<StudentDashboard />} />
             <Route path='wekk' element={<WeekLyName />} />
