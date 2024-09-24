@@ -54,13 +54,36 @@ export const LandingPage = () => {
             </center>
 
             <div className="flex flex-row justify-between p-3 m-4">
-               {Array(3).fill().map((_, index) => (
-                  <main key={index} className="bg-white p-4 shadow-lg m-4 rounded-lg">
-                     <h2 className="font-serif text-center p-2 text-gray-500 text-2xl">About Siwess platform</h2>
-                     <p className="text-justify text-sm ">By bringing your company’s communication with your leads and customers in one place, Gist lets your entire team rally around a single app for day to day work. One tool to learn. One place to check for notifications. No more constant switching between email marketing, social and other chat apps. This allows for a smoother handoff between Marketing, Sales & Services, and a more delightful experience for your customers.</p>
-                  </main>
-               ))}
-            </div>
+   {[
+      {
+         title: "Objectives of SIWES",
+         content: "The objectives of SIWES are to provide students in higher institutions with opportunities to acquire industrial skills and experience relevant to their courses of study, preparing them for the industrial work environment they will encounter post-graduation. It aims to expose students to work methods and techniques for handling equipment and machinery not available in their institutions, thereby easing the transition from school to the workplace and enhancing their job placement prospects."
+
+      },
+      {
+          title: "SIWES Overview",
+         content: "The Student Industrial Work Experience Scheme (SIWES) is an important part and a crucial component of the Nigerian educational curriculum, it is designed to bridge the gap between theoretical knowledge gained by the students in the classroom and the needed practical experience for the real-life work that students will be engaging with after leaving the school."
+         
+      },
+      {
+         title: "Scope of SIWES",
+         content: "The aim of the programme is to solve the problem of inadequate practical skills required for employment in industries. The Student Industrial Work Experience Scheme is a government approved and mandatory phase of education scheme that is open to undergraduate students in the following fields: Agricultural Science, English, Technology, Environmental Science, Education, Medical Science, Pure and Applied Sciences."
+      }
+   ].map((item, index) => (
+      <main key={index} className="bg-white p-4 shadow-lg m-4 rounded-lg w-1/3">
+         <h2 className="font-serif text-center p-2 text-gray-500 text-2xl">{item.title}</h2>
+         <p className="text-justify text-sm">{item.content}</p>
+      </main>
+   ))}
+</div>
+
+
+
+
+
+
+
+
          </div>
       </div>
    );

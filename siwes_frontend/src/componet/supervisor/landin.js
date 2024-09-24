@@ -58,7 +58,7 @@ export const LecturerDashboard = () => {
             <th className="p-3 border-b">Email</th>
             <th className="p-3 border-b">Course</th>
             <th className="p-3 border-b">Department</th>
-            <th className="p-3 border-b">Dstablishment</th>
+            <th className="p-3 border-b">Establishment</th>
 
             <th className="p-3 border-b">Actions</th>
           </tr>
