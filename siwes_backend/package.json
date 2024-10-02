@@ -2,9 +2,10 @@
   "name": "siwes_backend",
   "version": "1.0.0",
   "description": "project backend",
-  "main": "App.js",
+  "main": "index.js",
   "scripts": {
-    "test": "npm run"
+    "test": "nodemon app.js"
+    
   },
   "repository": {
     "type": "git",
