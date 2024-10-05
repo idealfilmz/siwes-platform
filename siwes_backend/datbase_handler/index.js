@@ -1,9 +1,17 @@
-//  here the dtatabase will be handle effectively...
-
-
 require('dotenv').config();
+
+const result = require('dotenv').config();
+if (result.error) {
+    throw result.error;
+}
+
 const mysql = require('mysql');
 
+console.log("using host ...", 'HOST:', process.env.HOST);
+
+console.log("and user .....", 'USER:', process.env.USER);
+console.log('PASSWORD:', process.env.PASSWORD);
+console.log('DATABASE:', process.env.DATABASE);
 
 const connection = mysql.createPool({
   connectionLimit: 10000,
@@ -16,15 +24,4 @@ const connection = mysql.createPool({
   timeout: 3000000
 });
 
-connection.getConnection((err, conn) => {
-  if (err) {
-    console.error('Error connecting to the database:', err);
-    return;
-  }
-  console.log({"connected": 'connected'});
-  conn.release();
-});
-
-
 module.exports = connection;
-

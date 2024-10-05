@@ -7,7 +7,7 @@ const bcrypt= require("bcryptjs")
 
 
 // login Api for user send a post method to this api to retrieve user details
-router.post("/login-lectures", async (req, res) => {
+router.post("login-lectures", async (req, res) => {
     const { matric_no, password } = req.body;
     
       // Query the database for the student that want to login
