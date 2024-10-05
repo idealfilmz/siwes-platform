@@ -1,19 +1,17 @@
 const express = require ("express")
-const db  = require("../../datbase_handler")
+const db  = require("../datbase_handler")
 const router = express.Router()
 const bcrypt= require("bcryptjs")
 
 
 
 
-// login Api for user send a post method to this api to retrieve user details
-router.post("login-lectures", async (req, res) => {
-    const { matric_no, password } = req.body;
-    
-      // Query the database for the student that want to login
+router.post("/login-lectures", async (req, res) => {
+    const { staff_id, password } = req.body;
+
       db.query(
-        "SELECT * FROM Lecturer WHERE staff_id = ?",
-        [matric_no],
+        "SELECT * FROM supervisors WHERE UQ= ?",
+        [staff_id],
         (error, result) => {
           if (error) {
             console.error("Database error:", error);
@@ -25,7 +23,7 @@ router.post("login-lectures", async (req, res) => {
     
           if (result.length === 0) {
             return res.status(404).json({
-              message: `No student found with matric_no ${staff_id}`,
+              message: `No lecture found`,
             });
           }
     
@@ -46,7 +44,7 @@ router.post("login-lectures", async (req, res) => {
               });
             }
             const token = jsonwebtoken.sign(
-              { matric_no: user.matric_no },
+              {user},
               process.env.JWT_SECRET,
               { expiresIn: "2h" }
             );

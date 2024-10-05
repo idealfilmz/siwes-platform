@@ -11,13 +11,11 @@ const register = require("../siwes_backend/Apis/authentications/register")
 const lectureRegister =  require("../siwes_backend/Apis/lecturerApis")
 const app= express()
 
-
 app.use(bodyParser.json());
 app.use(morgan('dev'));
-
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/', register)
-app.use("", lectureRegister)
+app.use("/", lectureRegister)
 app.use("/",loginApi)
 
 app.use(morgan('dev'));
