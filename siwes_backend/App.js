@@ -9,6 +9,8 @@ const createError = require('http-errors');
 const loginApi = require('../siwes_backend/Apis/authentications/auth')
 const register = require("../siwes_backend/Apis/authentications/register")
 const lectureRegister =  require("../siwes_backend/Apis/lecturerApis")
+const lecturedetails = require("../siwes_backend/Apis/fetchLectures")
+const fetchStd = require("../siwes_backend/Apis/createApi")
 const app= express()
 
 app.use(bodyParser.json());
@@ -17,6 +19,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/', register)
 app.use("/", lectureRegister)
 app.use("/",loginApi)
+app.use("/", lecturedetails)
+app.use("/",fetchStd)
+
+
+
 
 app.use(morgan('dev'));
 app.use(async (req, res, next) => {

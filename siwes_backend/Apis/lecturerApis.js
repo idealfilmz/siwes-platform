@@ -8,7 +8,6 @@ const bcrypt= require("bcryptjs")
 
 router.post("/login-lectures", async (req, res) => {
     const { staff_id, password } = req.body;
-
       db.query(
         "SELECT * FROM supervisors WHERE UQ= ?",
         [staff_id],
