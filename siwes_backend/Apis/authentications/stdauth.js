@@ -15,7 +15,6 @@ router.post("/create-account", async (req, res, next) => {
 
     // Prepare the data for insertion into the database
     const data = { fullname, matric_number, email, department, course, password, phone_number };
-
     try {
         // Hash the password before saving
         const salt = await bcrypt.genSalt(10);
@@ -40,23 +39,23 @@ router.post("/login", (req, res, next)=>{
 
     const {matric_number, password} = req.body
     if(!matric_number || !password){
-        res.json({"message":"please provide your matric number or password"})
+        res.status(400).json({"message":"please provide your matric number or password"})
         return
     }
 
     db.query("SELECT * FROM students WHERE matric_number =?",[matric_number],(error, result)=>{
         if(error){
-            res.json({"message":"An error occur login you in", 'error':error})
+            res.status(403).json({"message":"An error occur login you in", 'error':error})
             return;
         }
 
         bcrypt.compare(password, result[0].password, (error, resul)=>{
             if(error){
-                res.json({"message":"something went wrong","error":error})
+                res.status(403).json({"message":"something went wrong","error":error})
                 return
             }
             if(!resul){
-                return res.json({"message":"please kindly provide your correct password!"})
+                return res.status(403).json({"message":"please kindly provide your correct password!"})
             }
             const token = jsonwebtoken.sign(
                 { user: result[0].id },
@@ -73,5 +72,7 @@ router.post("/login", (req, res, next)=>{
         })
   
     })
+
+
 
 module.exports = router;

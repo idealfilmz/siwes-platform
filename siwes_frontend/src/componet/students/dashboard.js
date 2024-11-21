@@ -1,45 +1,73 @@
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FaBookOpen, FaFileAlt, FaCheckCircle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 
 
-const studentData = [
-  {
-    studentId: "S1",
-    name: "John Doe",
-    weekly_progress: "5",
-    scores: {
-      week1: 85,
-      week2: 90,
-      // week3 and week4 are missing
-    },
-  },
-  // Add more student data here
-];
+
 export const StudentDashboard = () => {
+  const [loading, setLoading] =useState(false)
+  const [data, setData] = useState(null)
+
   const navigate =useNavigate()
-  const getWeeksWithScores = (scores) => {
-    return Object.keys(scores).length; // Counts the number of weeks with scores
-  };
+ 
+
+
+
+  const id =localStorage.getItem("id")
+  const token = localStorage.getItem("token")
+
+const FetchDetails =async ()=>{
+
+    setLoading(true); 
+    try {
+        const response = await fetch(`http://127.0.0.1:3000/fetchdetails?id=${id}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",  // Add content type header
+            },
+        });
+
+        const data = await response.json();  // Await the response JSON
+
+        if (!response.ok) {
+            // If the response is not OK, show the message
+    
+            return;
+        }
+        setData(data)
+    } catch (e) {
+        console.error("Login failed:", e);  // Log the error for debugging
+       return
+    } finally {
+        setLoading(false); 
+        return;
+    }
+}
+
+
+useEffect(()=>{
+  FetchDetails()
+},[id])
+
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <h1 className="text-2xl font-semibold mb-6 text-center text-gray-950 shadow-lg">Student Dashboard </h1>
       <div className="flex flex-row justify-between">
         <h2>
-          Welcome, <b>Sulyman</b>
+          Welcome, <b>{data?.data?.fullname?.split(" ")[0].toUpperCase()}</b>
         </h2>
-        <h3>16/25pl062</h3>
+        <h3>{data?.data?.matric_number}</h3>
       </div>
 
       <div className="absolute left-0  bottom-8 p-1">
         <h3>
-            Supervisor: DR.Oloshola M.a
+            Supervisor:{"coming soon.."}
         </h3>
         <h5>
-         Phone: 08130423221
+         Phone: {"coming soon.."}
         </h5>
       </div>
 

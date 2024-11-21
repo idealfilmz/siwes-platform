@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 export const Login = () => {
    const [username, setUsername] = useState("");
    const [password, setPassword] = useState("");
+   const [loading, setLoading] = useState(false)
+   const [message, setMessage] = useState("")
    const navigate  = useNavigate()
 
    const handleUsernameChange = (event) => {
@@ -12,6 +14,28 @@ export const Login = () => {
    const handlePasswordChange = (event) => {
       setPassword(event.target.value);
    };
+
+
+const Login = async () =>{
+
+setLoading(true)
+const response = await fetch("localhost:3000/login-students",{
+   method:"POST",
+   headers:{"content-type":"application/json"},
+   body:JSON.stringify({
+      "matric_no":username,
+      "password":"samuel"})
+})
+
+const data = response.json()
+if(!response.ok){
+   setMessage(data.message)
+   return 
+
+}
+
+}
+
 
    const handleSubmit = (event) => {
       event.preventDefault();
@@ -53,7 +77,9 @@ export const Login = () => {
                >
                   Login
                </button>
+
             </form>
+            {message}
          </div>
       </div>
    );

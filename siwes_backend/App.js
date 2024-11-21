@@ -11,17 +11,22 @@ const register = require("./Apis/authentications/stdauth")
 const lectureRegister =  require("../siwes_backend/Apis/lecturerApis")
 const lecturedetails = require("../siwes_backend/Apis/fetchLectures")
 const fetchStd = require("../siwes_backend/Apis/createApi")
+const fetchdetails = require("../siwes_backend/Apis/authentications/userdetails")
 const  authenticateToken =require('./security/token');
-const app= express()
+const app = express()
+const corsOptions = {
+  origin: 'http://localhost:3001', // Specify the exact origin you want to allow
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'token'], // Add 'token' to allowed headers
+};
+
+app.use(cors(corsOptions));
 
 app.use(bodyParser.json());
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/', register)
-app.use("/", lectureRegister)
-app.use("/",loginApi)
-app.use("/", lecturedetails)
-app.use("/",fetchStd)
+app.use('/',fetchdetails)
 app.use(morgan('dev'));
 
 
@@ -34,3 +39,4 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running at ${PORT}`);
 });
+
