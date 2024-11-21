@@ -7,10 +7,11 @@ require('dotenv').config();
 const bodyParser = require('body-parser');
 const createError = require('http-errors');
 const loginApi = require('../siwes_backend/Apis/authentications/auth')
-const register = require("../siwes_backend/Apis/authentications/register")
+const register = require("./Apis/authentications/stdauth")
 const lectureRegister =  require("../siwes_backend/Apis/lecturerApis")
 const lecturedetails = require("../siwes_backend/Apis/fetchLectures")
 const fetchStd = require("../siwes_backend/Apis/createApi")
+const  authenticateToken =require('./security/token');
 const app= express()
 
 app.use(bodyParser.json());

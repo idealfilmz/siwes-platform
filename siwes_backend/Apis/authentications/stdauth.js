@@ -1,9 +1,8 @@
 const express = require("express");
-
+const jsonwebtoken = require("jsonwebtoken");
 const app = express();
 const router = express.Router();
 const bcrypt = require("bcryptjs");
-const { json } = require("body-parser");
 const db = require("../../datbase_handler/index");
 
 router.post("/create-account", async (req, res, next) => {
@@ -36,5 +35,43 @@ router.post("/create-account", async (req, res, next) => {
         return res.status(500).json({ "message": "Error processing request" });
     }
 });
+
+router.post("/login", (req, res, next)=>{
+
+    const {matric_number, password} = req.body
+    if(!matric_number || !password){
+        res.json({"message":"please provide your matric number or password"})
+        return
+    }
+
+    db.query("SELECT * FROM students WHERE matric_number =?",[matric_number],(error, result)=>{
+        if(error){
+            res.json({"message":"An error occur login you in", 'error':error})
+            return;
+        }
+
+        bcrypt.compare(password, result[0].password, (error, resul)=>{
+            if(error){
+                res.json({"message":"something went wrong","error":error})
+                return
+            }
+            if(!resul){
+                return res.json({"message":"please kindly provide your correct password!"})
+            }
+            const token = jsonwebtoken.sign(
+                { user: result[0].id },
+                process.env.JWT_SECRET,
+                { expiresIn: "2h" }
+              );
+
+              return res.status(200).json({
+                message: "Login successful.",
+                user:{"id":result[0].id,"matric_no":result[0].matric_number},
+                token:token,
+              });
+            });
+        })
+  
+    })
 
 module.exports = router;
