@@ -10,6 +10,7 @@ const bcrypt= require("bcryptjs")
 // login Api for user send a post method to this api to retrieve user details
 // working 100 cool
 
+
 router.post("/login-students", async (req, res) => {
     const { matric_no, password } = req.body;
     

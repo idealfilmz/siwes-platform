@@ -7,12 +7,6 @@ if (result.error) {
 
 const mysql = require('mysql');
 
-console.log("using host ...", 'HOST:', process.env.HOST);
-
-console.log("and user .....", 'USER:', process.env.USER);
-console.log('PASSWORD:', process.env.PASSWORD);
-console.log('DATABASE:', process.env.DATABASE);
-
 const connection = mysql.createPool({
   connectionLimit: 10000,
   host: process.env.HOST,
@@ -23,5 +17,14 @@ const connection = mysql.createPool({
   acquireTimeout: 3000000,
   timeout: 3000000
 });
+
+connection.getConnection((err, conn) => {
+  if (err) {
+    console.error('Error connecting to the database:', err);
+    return;
+  }
+  console.log({"connected": 'connected'});
+});
+
 
 module.exports = connection;

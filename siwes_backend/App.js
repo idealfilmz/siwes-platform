@@ -21,22 +21,15 @@ app.use("/", lectureRegister)
 app.use("/",loginApi)
 app.use("/", lecturedetails)
 app.use("/",fetchStd)
-
-
-
-
 app.use(morgan('dev'));
+
+
 app.use(async (req, res, next) => {
   next(createError.NotFound('You are not allowed to this page at this moment.'));
 });
 
-app.get("/",(req,res,next)=>{
-res.status(201).json({"name":"john paul", "age":70})
-})
-
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-
   console.log(`Server running at ${PORT}`);
 });
