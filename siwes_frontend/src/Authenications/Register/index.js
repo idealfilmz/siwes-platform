@@ -2,38 +2,38 @@ import React, { useState } from "react";
 import { FaSpinner } from "react-icons/fa";
 
 export const Register = () => {
-  const [formData, setFormData] = useState({
-    matric_number: "",
-    phone_number: "",
-    fullnamd: "",
-    password: "",
-    course: "",
-    department: "",
-    email: "",
-  });
+const [fullname, setFullname] = useState("")
+
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [password, setPassword] = useState("");
+  const [matric_number, setMatric] = useState("")
+  const [email, setEmail] = useState("")
+  const [department, setDepartment] = useState("")
+  const [course, setCource] = useState("")
+const [phone_number, setPhone] = useState("")
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
 
-  const Register = async (e) => {
-   e.preventDefault()
-    setLoading(true); // Set loading state to true
-
+  const register = async () => {
+    setLoading(true); 
     try {
       const response = await fetch("http://127.0.0.1:3000/create-account", {
         method: "POST",
         headers: {
           "Content-Type": "application/json", // Add content type header
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+         "fullname":fullname,
+         "password":password,
+         "matric_number":matric_number,
+         "email":email,
+         "department":department,
+         "course":course,
+         "phone_number":phone_number,
+        }),
       });
+
+      console.log(department, email)
 
       const data = await response.json(); // Await the response JSON
 
@@ -54,7 +54,6 @@ export const Register = () => {
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-lg p-8 bg-white shadow-lg rounded-lg">
         <h1 className="text-2xl font-semibold mb-6 text-center">Register</h1>
-        <form onSubmit={Register}>
           <div className="mb-4">
             <label htmlFor="matricNumber" className="block text-gray-700 mb-2">
               Matric Number
@@ -64,8 +63,8 @@ export const Register = () => {
               name="matricNumber"
               type="text"
               placeholder="Enter matric number"
-              value={formData.matricNumber}
-              onChange={handleChange}
+              value={matric_number}
+              onChange={(e)=>setMatric(e.target.value)}
               className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
@@ -78,8 +77,8 @@ export const Register = () => {
               name="phoneNumber"
               type="text"
               placeholder="Enter phone number"
-              value={formData.phoneNumber}
-              onChange={handleChange}
+              
+              onChange={(e)=>setPhone(e.target.value)}
               className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
@@ -92,8 +91,7 @@ export const Register = () => {
               name="fullName"
               type="text"
               placeholder="Enter full name"
-              value={formData.fullName}
-              onChange={handleChange}
+                        onChange={(e)=>setFullname(e.target.value)}
               className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
@@ -106,8 +104,7 @@ export const Register = () => {
               name="password"
               type="password"
               placeholder="Enter password"
-              value={formData.password}
-              onChange={handleChange}
+                        onChange={(e)=>setPassword(e.target.value)}
               className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
@@ -120,8 +117,7 @@ export const Register = () => {
               name="course"
               type="text"
               placeholder="Enter course"
-              value={formData.course}
-              onChange={handleChange}
+                   onChange={(e)=>setCource(e.target.value)}
               className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
@@ -134,8 +130,7 @@ export const Register = () => {
               name="department"
               type="text"
               placeholder="Enter department"
-              value={formData.department}
-              onChange={handleChange}
+                            onChange={(e)=>setDepartment(e.target.value)}
               className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
@@ -148,8 +143,7 @@ export const Register = () => {
               name="email"
               type="email"
               placeholder="Enter email"
-              value={formData.email}
-              onChange={handleChange}
+               onChange={(e)=>setEmail(e.target.value)}
               className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
@@ -157,13 +151,14 @@ export const Register = () => {
             <FaSpinner className="animate-spin" />
           ) : (
             <button
+            onClick={register}
               type="submit"
               className="w-full py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               Register
             </button>
           )}
-        </form>
+        
 <p>
 {message}
 </p>
