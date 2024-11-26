@@ -134,6 +134,32 @@ router.post("/create-logbook", (req, res, next) => {
     });
 });
 
+router.post("/get-logbook",(req, res, next)=>{
+    const {student_id} = req.query;
+    db.query("SELECT * FROM logbook WHERE student_id=?",[student_id],(err, resul)=>{
+        if(err){
+            res.json({"message":"an error occur"})
+            return;
+        }
+        if (resul.length === 0) {
+                return res.status(200).json({
+                    "message": "Logbook created successfully",
+                    "data": resul
+                });
+        }
+
+        return res.status(200).json({
+            "message": "Logbook created successfully",
+            "data": resul
+        })
+    })
+
+})
+
+
+
+
+
 
 
 

@@ -35,6 +35,6 @@ router.get("/fetchdetails", async (req, res) => {
       );
     });  
   
-
+// details
 
 module.exports = router;

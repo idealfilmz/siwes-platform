@@ -12,7 +12,6 @@ const jsonwebtoken = require("jsonwebtoken");
 
 router.post("/login-students", async (req, res) => {
     const { matric_no, password } = req.body;
-    
       // Query the database for the student that want to login
       db.query(
         "SELECT * FROM students WHERE matric_number = ?",
@@ -31,6 +30,7 @@ router.post("/login-students", async (req, res) => {
               message: `No student found with matric_no ${matric_no}`,
             });
           }
+          
     
           const user = result[0];
           // Compare the provided password with the stored hashed password
