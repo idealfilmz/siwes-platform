@@ -157,10 +157,4 @@ router.post("/get-logbook",(req, res, next)=>{
 })
 
 
-
-
-
-
-
-
 module.exports = router;
