@@ -1,68 +1,64 @@
-const express = require ("express")
-const db  = require("../../datbase_handler")
-const router = express.Router()
-const bcrypt= require("bcryptjs")
+const express = require("express");
+const db = require("../../datbase_handler");
+const router = express.Router();
+const bcrypt = require("bcryptjs");
 const jsonwebtoken = require("jsonwebtoken");
-
-
+const CreateLectures = require("../../helpers/lecturer");
 
 // login Api for user send a post method to this api to retrieve user details
 // working 100 cool
 
+router.post("/create-lecture", async (req, res) => {
+  const { email, phone_number, fullname, password } = req.body;
 
-router.post("/login-students", async (req, res) => {
-    const { matric_no, password } = req.body;
-      // Query the database for the student that want to login
-      db.query(
-        "SELECT * FROM students WHERE matric_number = ?",
-        [matric_no],
-        (error, result) => {
-          if (error) {
-            console.error("Database error:", error);
-            return res.status(500).json({
-              message: "An error occurred while fetching the student.",
-              data: error,
-            });
-          }
-    
-          if (result.length === 0) {
-            return res.status(404).json({
-              message: `No student found with matric_no ${matric_no}`,
-            });
-          }
-          
-    
-          const user = result[0];
-          // Compare the provided password with the stored hashed password
-          bcrypt.compare(password, user.password, (err, isMatch) => {
-            if (err) {
-              console.error("Bcrypt error:", err);
-              return res.status(500).json({
-                message: "An error occurred while checking the password.",
-                data: err,
-              });
-            }
-    
-            if (!isMatch) {
-              return res.status(401).json({
-                message: "Incorrect password.",
-              });
-            }
-            const token = jsonwebtoken.sign(
-              { matric_no: user.matric_no },
-              process.env.JWT_SECRET,
-              { expiresIn: "2h" }
-            );
-            return res.status(200).json({
-              message: "Login successful.",
-              user:user,    // return the user details 
-              token:token, //return token
-            });
+  try {
+    const neArr = email.split("@");
+    if (neArr[1] !== "unilorin.edu.ng") {
+      res.json({ message: "Email not identified" });
+      return;
+    }
+    if (email.split(".")[0] !== fullname.split(" ")[0]) {
+      res.json({ message: "Staff not recognized" });
+      return;
+    }
+
+    if (!email || !phone_number || !fullname || !password) {
+      res.json({ message: "please complete all info" });
+      return;
+    }
+
+    const randomNumbersString = Array.from({ length: 5 }, () =>
+      Math.floor(Math.random() * 10)
+    ).join("");
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    const lecture = new CreateLectures(
+      email,
+      phone_number,
+      fullname,
+      hashedPassword,
+      randomNumbersString
+    );
+    db.query(
+      "INSERT INTO supervisors SET ?",
+      [lecture.Values()],
+      (error, result) => {
+        if (error) {
+          console.error("Database error:", error);
+          return res.status(500).json({
+            message: "An error occurred CREATING ACCOUNT",
+            data: error,
           });
         }
-      );
-    });  
-  
-
+        res.json({
+          message: "Your staff_id has been sent to your registerd mail",
+        });
+      }
+    );
+  } catch {
+    res.json({ message: "something occur" });
+    return;
+  }
+});
 
 module.exports = router;
