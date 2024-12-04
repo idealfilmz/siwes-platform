@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { FaSpinner } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 export const SignUp = () => {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [fullname, setFulname] = useState("");
   const [email, setEmail] = useState("");
@@ -27,8 +29,11 @@ export const SignUp = () => {
       });
 
       const data = await response.json();
-      console.log(data);
+
       alert(data.message);
+      if (response.ok) {
+        navigate("/supervisor-login");
+      }
       setLoading(false);
     } catch {
       setLoading(false);

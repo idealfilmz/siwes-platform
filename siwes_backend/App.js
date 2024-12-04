@@ -5,6 +5,7 @@ require("dotenv").config();
 const bodyParser = require("body-parser");
 const createError = require("http-errors");
 
+const siwes = require("./Apis/siwesApis/siwes");
 const register = require("./Apis/authentications/stdauth");
 const lecturer = require("./Apis/authentications/lectures");
 const fetchdetails = require("../siwes_backend/Apis/authentications/userdetails");
@@ -22,6 +23,7 @@ app.use(bodyParser.json());
 app.use(morgan("dev"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/", register);
+app.use("/", siwes);
 app.use("/", lecturer);
 app.use("/", fetchdetails);
 app.use(morgan("dev"));
