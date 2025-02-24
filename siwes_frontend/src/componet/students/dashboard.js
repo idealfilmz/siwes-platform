@@ -58,6 +58,7 @@ export const StudentDashboard = () => {
       </div>
 
       <div className="absolute left-0  bottom-8 p-1">
+        {/* supervisor to each student details here */}
         <h3>Supervisor:{"coming soon.."}</h3>
         <h5>Phone: {"coming soon.."}</h5>
       </div>
