@@ -6,6 +6,7 @@ const loghelper = require("../../helpers/logbookHelp");
 const bcrypt = require("bcryptjs");
 const db = require("../../datbase_handler/index");
 
+// adding astudents to lcturer dashboard here
 router.post("/create-account", async (req, res, next) => {
   const {
     fullname,
@@ -56,6 +57,7 @@ router.post("/create-account", async (req, res, next) => {
     return res.status(500).json({ message: "Error processing request" });
   }
 });
+
 router.post("/login", (req, res, next) => {
   const { matric_number, password } = req.body;
 

@@ -10,6 +10,7 @@ const register = require("./Apis/authentications/stdauth");
 const lecturer = require("./Apis/authentications/lectures");
 const fetchdetails = require("../siwes_backend/Apis/authentications/userdetails");
 const authenticateToken = require("./security/token");
+const lecturerApis = require("./Apis/lecturerApis");
 const app = express();
 const corsOptions = {
   origin: "http://localhost:3001", // Specify the exact origin you want to allow
@@ -26,6 +27,7 @@ app.use("/", register);
 app.use("/", siwes);
 app.use("/", lecturer);
 app.use("/", fetchdetails);
+app.use("/", lecturerApis);
 app.use(morgan("dev"));
 
 app.use(async (req, res, next) => {
@@ -35,7 +37,6 @@ app.use(async (req, res, next) => {
 });
 
 const PORT = process.env.PORT || 3000;
-
 app.listen(PORT, () => {
   console.log(`Server running at ${PORT}`);
 });

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 export const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -7,21 +8,30 @@ export const Login = () => {
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
-  const Login = async () => {
+  const login = async () => {
     setLoading(true);
-    const response = await fetch("localhost:3000/login-supervisor", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        matric_no: username,
-        password: "samuel",
-      }),
-    });
+    try {
+      const response = await fetch("http://127.0.0.1:3000/login-lectures", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          staff_id: username,
+          password: password,
+        }),
+      });
 
-    const data = response.json();
-    if (!response.ok) {
-      setMessage(data.message);
-      return;
+      const data = await response.json();
+      if (!response.ok) {
+        setMessage(data.message);
+        return;
+      }
+
+      // Handle successful login here
+      navigate("/dashboard");
+    } catch (error) {
+      setMessage("An error occurred. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -37,6 +47,7 @@ export const Login = () => {
           <input
             id="username"
             type="text"
+            onChange={(e) => setUsername(e.target.value)}
             placeholder="Enter staff id"
             value={username}
             className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -56,11 +67,11 @@ export const Login = () => {
           />
         </div>
         <button
-          onClick={() => Login()}
+          onClick={() => login()}
           type="submit"
           className="w-full py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
-          Login
+          login
         </button>
         {message}
       </div>

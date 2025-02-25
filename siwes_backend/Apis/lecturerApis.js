@@ -6,7 +6,7 @@ const bcrypt = require("bcryptjs");
 router.post("/login-lectures", async (req, res) => {
   const { staff_id, password } = req.body;
   db.query(
-    "SELECT * FROM supervisors WHERE UQ= ?",
+    "SELECT * FROM supervisors WHERE email= ?",
     [staff_id],
     (error, result) => {
       if (error) {
@@ -16,7 +16,6 @@ router.post("/login-lectures", async (req, res) => {
           data: error,
         });
       }
-
       if (result.length === 0) {
         return res.status(404).json({
           message: `No lecture found`,
