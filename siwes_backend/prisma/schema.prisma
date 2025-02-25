@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Logbook {
+  id            Int      @id @default(autoincrement())
+  student_id    Int
+  establishment String
+  institution   String
+  address       String?
+  SCORE         Int?
+  day           Int?
+  weekly        Weekly[]
+  student       Students  @relation(fields: [student_id], references: [id])
+
+  @@unique([student_id, establishment])
+}
+
+model Students {
+  id            Int                @id @default(autoincrement())
+  matric_number String             @unique
+  phone_number  String?
+  fullname      String
+  password      String
+  course        String?
+  department    String?
+  email         String             @unique
+  logbooks      Logbook[]
+  supervisors   StudentSupervisor[]
+}
+
+model StudentSupervisor {
+  id           Int         @id @default(autoincrement())
+  std_id       Int
+  supervisor_id Int
+  student      Students    @relation(fields: [std_id], references: [id])
+  supervisor   Supervisors @relation(fields: [supervisor_id], references: [PK])
+}
+
+model Supervisors {
+  PK            Int                @id @default(autoincrement())
+  id            Int
+  UQ            String             @unique
+  email         String             @unique
+  phone_number  String?
+  fullname      String
+  password      String
+  supervisor_id Int?
+  students      StudentSupervisor[]
+}
+
+model Weekly {
+  id            Int      @id @default(autoincrement())
+  progress      String
+  logbook_id    Int?
+  scores        Int?
+  weekly_tract  Int?
+  progress_file String?
+  logbook       Logbook? @relation(fields: [logbook_id], references: [id])
+
+  @@index([logbook_id])
+}

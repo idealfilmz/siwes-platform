@@ -1,27 +1,42 @@
 const express = require("express");
-const db = require("../datbase_handler");
+const prisma = require("../prismaClient"); // Import Prisma client
 const router = express.Router();
-const bcrypt = require("bcryptjs");
 
-// this will fetch each students details
+router.get("/fetch-lecture", async (req, res) => {
+  try {
+    const { id } = req.query; // Get lecturer (supervisor) ID
 
-router.get("fetch-lecture", async (req, res) => {
-  const { id } = req.query;
-  db.query(
-    `SELECT * FROM  student 
-    JOIN
-    supervisor_students ON students.id= supervisor_student.student_id
-    JOIN
-    supervisors ON supervisors ON supervisor_student.supervisor_id= sipervisors.id;  
-    `,
-    [id],
-    (error, result) => {
-      if (error) {
-        return error;
-      }
-      res.json({ result });
+    if (!id) {
+      return res.status(400).json({ error: "Supervisor ID is required" });
     }
-  );
+
+    // Find students supervised by the given supervisor ID
+    const students = await prisma.students.findMany({
+      where: {
+        supervisors: {
+          some: {
+            supervisor_id: Number(id) // Filter by supervisor ID
+          }
+        }
+      },
+      include: {
+        supervisors: {
+          include: {
+            supervisor: true // Include supervisor details if needed
+          }
+        }
+      }
+    });
+
+    if (students.length === 0) {
+      return res.status(404).json({ message: "No students found for this supervisor" });
+    }
+
+    res.json(students);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 module.exports = router;

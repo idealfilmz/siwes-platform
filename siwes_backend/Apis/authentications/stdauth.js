@@ -6,57 +6,85 @@ const loghelper = require("../../helpers/logbookHelp");
 const bcrypt = require("bcryptjs");
 const db = require("../../datbase_handler/index");
 
-// adding astudents to lcturer dashboard here
-router.post("/create-account", async (req, res, next) => {
-  const {
-    fullname,
-    password,
-    matric_number,
-    email,
-    department,
-    course,
-    phone_number,
-  } = req.body;
+const bcrypt = require("bcryptjs");
+const prisma = require("../prismaClient"); // Import Prisma client
 
-  console.log(fullname);
 
-  // Validation for missing fields
-  if (!fullname || !matric_number || !email || !password) {
-    return res
-      .status(400)
-      .json({ message: "please fill  all form to continue" });
-  }
-
-  // Prepare the data for insertion into the database
-  const data = {
-    fullname,
-    matric_number,
-    email,
-    department,
-    course,
-    password,
-    phone_number,
-  };
+router.post("/create-account", async (req, res) => {
   try {
-    // Hash the password before saving
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    const { fullname, password, matric_number, email, department, course, phone_number } = req.body;
 
-    // Replace the plain password with the hashed password
-    data.password = hashedPassword;
+    // Validation for missing fields
+    if (!fullname || !matric_number || !email || !password) {
+      return res.status(400).json({ message: "Please fill all fields to continue" });
+    }
 
-    // Insert the data into the database
-    db.query("INSERT INTO students SET ?", [data], (error, result) => {
-      if (error) {
-        console.log(error);
-        return res.status(500).json({ message: "something went wrong" });
-      }
-      return res.status(201).json({ message: "Successfully created account!" });
+    // Check if student already exists
+    const existingStudent = await prisma.students.findUnique({
+      where: { email },
     });
+
+    if (existingStudent) {
+      return res.status(400).json({ message: "Email already in use" });
+    }
+
+    // Hash the password before saving
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create a new student
+    const newStudent = await prisma.students.create({
+      data: {
+        fullname,
+        matric_number,
+        email,
+        department,
+        course,
+        password: hashedPassword,
+        phone_number,
+      },
+    });
+
+    // Find a supervisor with less than 20 students
+    const availableSupervisor = await prisma.supervisors.findFirst({
+      where: {
+        students: {
+          some: {
+            std_id: { not: null } // Ensure supervisor has students
+          }
+        }
+      },
+      include: {
+        students: true, // Include student-supervisor relationships
+      },
+      orderBy: {
+        students: { _count: "asc" }, // Prioritize supervisors with the fewest students
+      },
+    });
+
+    // Ensure we don't exceed 20 students per supervisor
+    if (availableSupervisor && availableSupervisor.students.length < 20) {
+      // Assign student to the supervisor
+      await prisma.studentSupervisor.create({
+        data: {
+          std_id: newStudent.id,
+          supervisor_id: availableSupervisor.PK, // Use supervisor's PK
+        },
+      });
+
+      return res.status(201).json({ message: "Account created and supervisor assigned!" });
+    }
+
+    // If no suitable supervisor is found
+    return res.status(400).json({ message: "No available supervisor with less than 20 students." });
+
   } catch (error) {
-    return res.status(500).json({ message: "Error processing request" });
+    console.error("Error:", error);
+    res.status(500).json({ message: "Error processing request" });
   }
 });
+
+module.exports = router;
+
 
 router.post("/login", (req, res, next) => {
   const { matric_number, password } = req.body;
@@ -245,5 +273,34 @@ router.post("/get-logbook", (req, res, next) => {
     }
   );
 });
+
+
+router.get("/get-supervisor", async (req, res) => {
+  try {
+    const { student_id } = req.query;
+
+    if (!student_id) {
+      return res.status(400).json({ message: "Student ID is required" });
+    }
+
+    // Find the supervisor assigned to this student
+    const studentSupervisor = await prisma.studentSupervisor.findFirst({
+      where: { std_id: Number(student_id) },
+      include: {
+        supervisor: true, // Include supervisor details
+      },
+    });
+
+    if (!studentSupervisor) {
+      return res.status(404).json({ message: "No supervisor assigned to this student" });
+    }
+
+    res.json(studentSupervisor.supervisor);
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ message: "Error processing request" });
+  }
+});
+
 
 module.exports = router;
