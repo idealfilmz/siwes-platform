@@ -34,6 +34,8 @@ function App() {
           <Route path="supervisor-login" element={<Login />} />
           <Route path="/supervisor" element={<SupervisorBar />}>
             <Route path="view" element={<LecturerOverview />} />
+
+
             <Route path="" element={<LecturerDashboard />} />
           </Route>
           <Route path="*" element={<Notfound />} />

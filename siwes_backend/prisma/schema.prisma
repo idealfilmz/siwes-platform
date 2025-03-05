@@ -44,7 +44,6 @@ model StudentSupervisor {
 
 model Supervisors {
   PK            Int                @id @default(autoincrement())
-  id            Int
   UQ            String             @unique
   email         String             @unique
   phone_number  String?

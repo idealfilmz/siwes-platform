@@ -22,12 +22,14 @@ export const Login = () => {
 
       const data = await response.json();
       if (!response.ok) {
-        setMessage(data.message);
+        setMessage(data.message + " Please try again");
         return;
-      }
+      } else {
+        console.log(data.user.PK);
+        localStorage.setItem("id", data.user.PK);
 
-      // Handle successful login here
-      navigate("/dashboard");
+        navigate("/supervisor");
+      }
     } catch (error) {
       setMessage("An error occurred. Please try again.");
     } finally {

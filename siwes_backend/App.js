@@ -8,9 +8,11 @@ const createError = require("http-errors");
 const siwes = require("./Apis/siwesApis/siwes");
 const register = require("./Apis/authentications/stdauth");
 const lecturer = require("./Apis/authentications/lectures");
+const dashboard = require("./Apis/dashboard/lecturerdashboard");
 const fetchdetails = require("../siwes_backend/Apis/authentications/userdetails");
 const authenticateToken = require("./security/token");
 const lecturerApis = require("./Apis/lecturerApis");
+const loginOnly = require("./Apis/authentications/loginonly");
 const app = express();
 const corsOptions = {
   origin: "http://localhost:3001", // Specify the exact origin you want to allow
@@ -19,7 +21,6 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-
 app.use(bodyParser.json());
 app.use(morgan("dev"));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -28,6 +29,9 @@ app.use("/", siwes);
 app.use("/", lecturer);
 app.use("/", fetchdetails);
 app.use("/", lecturerApis);
+app.use("/api", loginOnly);
+app.use("/api", dashboard);
+
 app.use(morgan("dev"));
 
 app.use(async (req, res, next) => {

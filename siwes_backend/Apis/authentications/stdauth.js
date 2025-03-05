@@ -5,18 +5,25 @@ const router = express.Router();
 const loghelper = require("../../helpers/logbookHelp");
 const bcrypt = require("bcryptjs");
 const db = require("../../datbase_handler/index");
-
-const bcrypt = require("bcryptjs");
-const prisma = require("../prismaClient"); // Import Prisma client
-
+const prisma = require("../../client");
 
 router.post("/create-account", async (req, res) => {
   try {
-    const { fullname, password, matric_number, email, department, course, phone_number } = req.body;
+    const {
+      fullname,
+      password,
+      matric_number,
+      email,
+      department,
+      course,
+      phone_number,
+    } = req.body;
 
     // Validation for missing fields
     if (!fullname || !matric_number || !email || !password) {
-      return res.status(400).json({ message: "Please fill all fields to continue" });
+      return res
+        .status(400)
+        .json({ message: "Please fill all fields to continue" });
     }
 
     // Check if student already exists
@@ -25,7 +32,7 @@ router.post("/create-account", async (req, res) => {
     });
 
     if (existingStudent) {
-      return res.status(400).json({ message: "Email already in use" });
+      return res.status(400).json({ message: "matric number already in use" });
     }
 
     // Hash the password before saving
@@ -43,101 +50,15 @@ router.post("/create-account", async (req, res) => {
         phone_number,
       },
     });
-
-    // Find a supervisor with less than 20 students
-    const availableSupervisor = await prisma.supervisors.findFirst({
-      where: {
-        students: {
-          some: {
-            std_id: { not: null } // Ensure supervisor has students
-          }
-        }
-      },
-      include: {
-        students: true, // Include student-supervisor relationships
-      },
-      orderBy: {
-        students: { _count: "asc" }, // Prioritize supervisors with the fewest students
-      },
-    });
-
-    // Ensure we don't exceed 20 students per supervisor
-    if (availableSupervisor && availableSupervisor.students.length < 20) {
-      // Assign student to the supervisor
-      await prisma.studentSupervisor.create({
-        data: {
-          std_id: newStudent.id,
-          supervisor_id: availableSupervisor.PK, // Use supervisor's PK
-        },
-      });
-
-      return res.status(201).json({ message: "Account created and supervisor assigned!" });
-    }
-
-    // If no suitable supervisor is found
-    return res.status(400).json({ message: "No available supervisor with less than 20 students." });
-
+    return res
+      .status(400)
+      .json({ message: "No available supervisor with less than 20 students." });
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({ message: "Error processing request" });
   }
 });
 
-module.exports = router;
-
-
-router.post("/login", (req, res, next) => {
-  const { matric_number, password } = req.body;
-
-  if (!matric_number || !password) {
-    return res
-      .status(400)
-      .json({ message: "Please provide your matric number or password" });
-  }
-
-  db.query(
-    "SELECT * FROM students WHERE matric_number = ?",
-    [matric_number],
-    (error, result) => {
-      if (error) {
-        return res.status(403).json({
-          message: "An error occurred while logging you in",
-          error: error,
-        });
-      }
-
-      if (result.length === 0) {
-        return res.status(404).json({ message: "Can't find user" });
-      }
-
-      bcrypt.compare(password, result[0].password, (error, isMatch) => {
-        if (error) {
-          return res
-            .status(403)
-            .json({ message: "Something went wrong", error: error });
-        }
-
-        if (!isMatch) {
-          return res
-            .status(403)
-            .json({ message: "Please provide the correct password" });
-        }
-
-        const token = jsonwebtoken.sign(
-          { user: result[0].id },
-          process.env.JWT_SECRET,
-          { expiresIn: "2h" }
-        );
-
-        return res.status(200).json({
-          message: "Login successful",
-          user: { id: result[0].id, matric_no: result[0].matric_number },
-          token: token,
-        });
-      });
-    }
-  );
-});
 router.get("/verify/", (req, res, next) => {
   const { id } = req.query;
   try {
@@ -221,22 +142,27 @@ router.post("/create-logbook", (req, res, next) => {
 
 // Get all related student under supervisor
 // fetching code error here need to fixed
-router.get("/get-under-supervisor", async (req, res, next) => {
-  const { id } = req.query; // Ensure the correct spelling 'req.query'
-  db.query(
-    `SELECT * 
-      FROM supervisors sup
-      LEFT JOIN student_supervisor stdp ON sup.id = stdp.supervisor_id
-      WHERE stdp.supervisor_id = ?;`,
-    [id], // Pass the 'id' as an array element to parameterize the query
-    (error, result) => {
-      if (error) {
-        res.json({ message: error });
-        return;
-      }
-      res.json({ message: result });
+router.get("/get-supervisor-details", async (req, res, next) => {
+  const { student_id } = req.query; // Ensure the correct spelling 'req.query'
+  try {
+    const studentSupervisor = await prisma.studentSupervisor.findFirst({
+      where: { std_id: Number(student_id) },
+      include: {
+        supervisor: true, // Include supervisor details
+      },
+    });
+
+    if (!studentSupervisor) {
+      return res
+        .status(404)
+        .json({ message: "No supervisor assigned to this student" });
     }
-  );
+
+    res.json(studentSupervisor.supervisor);
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ message: "Error processing request" });
+  }
 });
 
 // uploading of image sync.....%60 done
@@ -274,7 +200,6 @@ router.post("/get-logbook", (req, res, next) => {
   );
 });
 
-
 router.get("/get-supervisor", async (req, res) => {
   try {
     const { student_id } = req.query;
@@ -292,7 +217,9 @@ router.get("/get-supervisor", async (req, res) => {
     });
 
     if (!studentSupervisor) {
-      return res.status(404).json({ message: "No supervisor assigned to this student" });
+      return res
+        .status(404)
+        .json({ message: "No supervisor assigned to this student" });
     }
 
     res.json(studentSupervisor.supervisor);
@@ -301,6 +228,5 @@ router.get("/get-supervisor", async (req, res) => {
     res.status(500).json({ message: "Error processing request" });
   }
 });
-
 
 module.exports = router;

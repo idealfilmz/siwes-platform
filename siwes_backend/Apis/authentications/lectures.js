@@ -1,16 +1,32 @@
 const express = require("express");
-const db = require("../../datbase_handler");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
-const jsonwebtoken = require("jsonwebtoken");
-const CreateLectures = require("../../helpers/lecturer");
+const prisma = require("../../client");
+const nodemailer = require("nodemailer");
 
-// login Api for user send a post method to this api to retrieve user details
-// working 100 cool
+const generateRandomNumbers = (count) => {
+  let randomNumbers = "";
+  for (let i = 0; i < count; i++) {
+    randomNumbers += Math.floor(Math.random() * 10); // Generates a random digit between 0 and 9
+  }
+  return randomNumbers;
+};
+
+
+  });
+
+  let mailOptions = {
+    from: "samuelyyyy257@gmail.com", // replace with your email
+    to: email,
+    subject: "Your Staff ID",
+    text: `Your staff ID is: ${uniqueKey}`,
+  };
+
+  await transporter.sendMail(mailOptions);
+};
 
 router.post("/create-lecture", async (req, res) => {
   const { email, phone_number, fullname, password } = req.body;
-
   try {
     const neArr = email.split("@");
     if (neArr[1] !== "unilorin.edu.ng") {
@@ -27,37 +43,31 @@ router.post("/create-lecture", async (req, res) => {
       return;
     }
 
-    const randomNumbersString = Array.from({ length: 5 }, () =>
-      Math.floor(Math.random() * 10)
-    ).join("");
+    const randomNumbers = generateRandomNumbers(5);
+
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-    const lecture = new CreateLectures(
-      email,
-      phone_number,
-      fullname,
-      hashedPassword,
-      randomNumbersString
-    );
-    db.query(
-      "INSERT INTO supervisors SET ?",
-      [lecture.Values()],
-      (error, result) => {
-        if (error) {
-          console.error("Database error:", error);
-          return res.status(500).json({
-            message: "An error occurred CREATING ACCOUNT",
-            data: error,
-          });
-        }
-        res.json({
-          message: "Your staff_id has been sent to your registerd mail",
-        });
-      }
-    );
-  } catch {
-    res.json({ message: "something occur" });
-    return;
+
+    const newSupervisor = await prisma.supervisors.create({
+      data: {
+        email,
+        phone_number,
+        fullname,
+        password: hashedPassword,
+        UQ: randomNumbers,
+      },
+    });
+
+    await sendEmail(email, randomNumbers);
+
+    res.json({
+      message: "Your staff_id has been sent to your registered mail",
+    });
+  } catch (error) {
+    console.error("Error creating account:", error);
+    res
+      .status(500)
+      .json({ message: "An error occurred CREATING ACCOUNT", data: error });
   }
 });
 

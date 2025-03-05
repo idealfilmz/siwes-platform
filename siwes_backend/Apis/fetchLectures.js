@@ -1,5 +1,5 @@
 const express = require("express");
-const prisma = require("../prismaClient"); // Import Prisma client
+const prisma = require("../client");
 const router = express.Router();
 
 router.get("/fetch-lecture", async (req, res) => {
@@ -15,21 +15,23 @@ router.get("/fetch-lecture", async (req, res) => {
       where: {
         supervisors: {
           some: {
-            supervisor_id: Number(id) // Filter by supervisor ID
-          }
-        }
+            supervisor_id: Number(id), // Filter by supervisor ID
+          },
+        },
       },
       include: {
         supervisors: {
           include: {
-            supervisor: true // Include supervisor details if needed
-          }
-        }
-      }
+            supervisor: true, // Include supervisor details if needed
+          },
+        },
+      },
     });
 
     if (students.length === 0) {
-      return res.status(404).json({ message: "No students found for this supervisor" });
+      return res
+        .status(404)
+        .json({ message: "No students found for this supervisor" });
     }
 
     res.json(students);
