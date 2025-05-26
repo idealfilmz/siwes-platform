@@ -29,12 +29,11 @@ function App() {
           <Route path="nav" element={<BottomNav />} />
 
           <Route path="/newpage" element={<NewPage />} />
-          <Route path="login" element={<SupLogin />} />
-          <Route path="SignUp" element={<SignUp />} />
+          <Route path="/login" element={<SupLogin />} />
+          <Route path="/signup" element={<SignUp />} />
           <Route path="supervisor-login" element={<Login />} />
           <Route path="/supervisor" element={<SupervisorBar />}>
             <Route path="view" element={<LecturerOverview />} />
-
 
             <Route path="" element={<LecturerDashboard />} />
           </Route>

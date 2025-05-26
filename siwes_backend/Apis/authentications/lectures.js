@@ -12,7 +12,14 @@ const generateRandomNumbers = (count) => {
   return randomNumbers;
 };
 
-
+// Define the sendEmail function
+const sendEmail = async (email, uniqueKey) => {
+  let transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: "samuelyyyy257@gmail.com", // replace with your email
+      pass: "your-email-password", // replace with your email password
+    },
   });
 
   let mailOptions = {
@@ -58,6 +65,7 @@ router.post("/create-lecture", async (req, res) => {
       },
     });
 
+    // Call the sendEmail function
     await sendEmail(email, randomNumbers);
 
     res.json({
