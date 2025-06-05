@@ -14,7 +14,7 @@ export const SignUp = () => {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:3000/create-lecture", {
+      const response = await fetch("http://127.0.0.1:5000/create-lecture", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -29,7 +29,6 @@ export const SignUp = () => {
       });
 
       const data = await response.json();
-
       alert(data.message);
       if (response.ok) {
         navigate("/supervisor-login");

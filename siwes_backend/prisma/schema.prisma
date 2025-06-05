@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -13,12 +13,19 @@ model Logbook {
   establishment String
   institution   String
   address       String?
-  SCORE         Int?
+  createdAt     DateTime @default(now())
   day           Int?
   weekly        Weekly[]
+  score         Score []
   student       Students  @relation(fields: [student_id], references: [id])
-
   @@unique([student_id, establishment])
+}
+
+model Score {
+ id            Int      @id @default(autoincrement())
+ scrore        Int 
+ logbook_id    Int
+ logbook       Logbook   @relation(fields: [logbook_id], references: [id])
 }
 
 model Students {
@@ -60,7 +67,7 @@ model Weekly {
   scores        Int?
   weekly_tract  Int?
   progress_file String?
+  createdAt     DateTime @default(now())
   logbook       Logbook? @relation(fields: [logbook_id], references: [id])
-
   @@index([logbook_id])
 }

@@ -16,6 +16,7 @@ import { SupLogin } from "./supervisor_login";
 import { Login } from "./Authenications/login";
 import { Upload } from "./componet/students/upload";
 import { SignUp } from "./supervisor_login/supervisorSignUp";
+import TextPage from "./students/text";
 
 function App() {
   return (
@@ -45,6 +46,8 @@ function App() {
             <Route path="" element={<StudentDashboard />} />
             <Route path="upload" element={<Upload />} />
             <Route path="wekk" element={<WeekLyName />} />
+            <Route path="test" element={<TextPage />} />
+
           </Route>
         </Routes>
       </div>

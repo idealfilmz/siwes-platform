@@ -37,24 +37,20 @@ router.post("/create-lecture", async (req, res) => {
   try {
     const neArr = email.split("@");
     if (neArr[1] !== "unilorin.edu.ng") {
-      res.json({ message: "Email not identified" });
+      res.status(400).json({ message: "Email not identified" });
       return;
     }
     if (email.split(".")[0] !== fullname.split(" ")[0]) {
-      res.json({ message: "Staff not recognized" });
+      res.status(400).json({ message: "Staff not recognized" });
       return;
     }
-
     if (!email || !phone_number || !fullname || !password) {
-      res.json({ message: "please complete all info" });
+      res.status(400).json({ message: "please complete all info" });
       return;
     }
-
     const randomNumbers = generateRandomNumbers(5);
-
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-
     const newSupervisor = await prisma.supervisors.create({
       data: {
         email,
@@ -64,11 +60,9 @@ router.post("/create-lecture", async (req, res) => {
         UQ: randomNumbers,
       },
     });
-
     // Call the sendEmail function
     await sendEmail(email, randomNumbers);
-
-    res.json({
+    res.status(400).json({
       message: "Your staff_id has been sent to your registered mail",
     });
   } catch (error) {

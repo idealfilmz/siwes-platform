@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FaSpinner } from "react-icons/fa";
+import { Logbookpop } from "./popguys/logpop";
 
 export const WeekLyName = () => {
   const date = new Date();
@@ -10,10 +11,13 @@ export const WeekLyName = () => {
   const [progress, setProgress] = useState("");
   const [newId, setId] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [openpop, seClosePop] = useState(false)
+
+
+
   async function fetchLogbook() {
     try {
-      const response = await fetch(
-        `http://localhost:3000/logbook-fetch?student_id=${id}`,
+      const response = await fetch(`http://127.0.0.1:5000/get-logbook?std_id=${id}`,
         {
           method: "GET",
           headers: {
@@ -23,39 +27,68 @@ export const WeekLyName = () => {
         }
       );
       const data = await response.json();
-      setId(data.data[0].id);
+      setId(data);
+      if (response.status === 300) {
+        setLoading(false)
+        seClosePop(!openpop);
+        return;
+      }
     } catch (e) {
-      console.log(e);
+      setLoading(false)
+
     } finally {
-      setLoading(false);
+      setLoading(false)
+      return
+        ;
     }
   }
   useEffect(() => {
     fetchLogbook();
-  }, [id]);
+  }, []);
 
-  const WeeklyPost = async () => {
+  if (loading) {
+    return (
+      <div>
+        <h5>Checking....&& creating.... logbook  </h5>
+        <p>Please wait....</p>
+        <FaSpinner className='animate-spin' />
+      </div>
+    )
+  }
+
+  async function CreateLogbokk() {
+    if (progress === "") {
+      return alert("Fill up the blank space");
+    }
+    if (!newId?.data?.id) {
+      return alert("Logbook not found. Please create your logbook first.");
+    }
     try {
-      const response = await fetch(`http://localhost:3000/weekly-post`, {
+      const response = await fetch("http://127.0.0.1:5000/weekly-base", {
         method: "POST",
         headers: {
-          "content-type": "application/json",
-          Accept: "application/json",
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          info: progress,
-          logbook_id: newId,
-          weekly: weekly,
+          progress,
+          logbook_id: newId.data.id,
         }),
       });
       const data = await response.json();
-      alert(data?.message);
+      if (response.ok) {
+        alert(data.message || "Weekly progress uploaded!");
+        setProgress(""); // Clear textarea
+        fetchLogbook();  // Optionally refresh logbook info
+      } else {
+        alert(data.message || "Upload failed.");
+      }
     } catch (e) {
-      console.log(e);
-    } finally {
-      setLoading(false);
+      alert("An error occurred. Please try again.");
     }
-  };
+  }
+
+
+
 
   return (
     <div className="p-4">
@@ -77,18 +110,14 @@ export const WeekLyName = () => {
             rows="20" // Adjust the number of rows as needed
           />
           <button
-            onClick={() => {
-              if (progress === "") {
-                return alert("fill up the blank space");
-              }
-              WeeklyPost();
-            }}
+            onClick={CreateLogbokk}
             className="p-2 m-1 bg-blue-700 text-white rounded-lg shadow-md"
           >
             Submit
           </button>
         </div>
       )}
+      <Logbookpop is_close={seClosePop} is_active={openpop} />
     </div>
   );
 };

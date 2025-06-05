@@ -1,9 +1,10 @@
 
 const express = require ("express")
-const db  = require("../../datbase_handler")
+
 const router = express.Router()
 const bcrypt= require("bcryptjs")
 const jsonwebtoken = require("jsonwebtoken");
+const prisma = require("../../client");
 
 
 
@@ -12,29 +13,31 @@ const jsonwebtoken = require("jsonwebtoken");
 
 
 router.get("/fetchdetails", async (req, res) => {
-    const id= req.query.id;
-
-      db.query(
-        "SELECT * FROM students WHERE id = ?",
-        [id],
-        (error, result) => {
-          if (error) {
-            console.error("Database error:", error);
-            return res.status(500).json({
-              message: "An error occurred while fetching the student.",
-              data: error,
-            });
-          }
-          if(result.length ===0){
-            res.json({"message":"your data is not found on our server"})
-            return;
-          }
-          let user  = result[0]
-          return res.json({"message":"sucessfully fetched","data":user})
-        }
-      );
-    });  
+  const _id = req.query.id;
+  try {
+    const Getdetails = await prisma.students.findUnique({
+      where: {
+        id: Number(_id),
+      },
+      include: {
+        logbooks:true,
+        supervisors: {
+          include: {
+            supervisor: true, // <-- This will fetch supervisor details
+          },
+          
+        },
+      },
+      
+    });
+    console.log(Getdetails)
+    return res.status(200).json({ message: "Fetched succesfully", data: Getdetails, supeervisor:Getdetails.supervisors });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "Message fetched error" });
+  }
+});
   
-// details
+
 
 module.exports = router;

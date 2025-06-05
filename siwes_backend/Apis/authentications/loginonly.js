@@ -12,12 +12,13 @@ router.post("/login", async (req, res) => {
       .status(400)
       .json({ message: "Please provide your matric number and password" });
   }
-
   try {
     const user = await prisma.students.findUnique({
       where: { matric_number },
+      include:{
+        logbooks:true
+      }
     });
-
     if (!user) {
       return res.status(404).json({ message: "Can't find user" });
     }
@@ -29,56 +30,52 @@ router.post("/login", async (req, res) => {
         .status(403)
         .json({ message: "Please provide the correct password" });
     }
-
     const token = jsonwebtoken.sign({ user: user.id }, process.env.JWT_SECRET, {
       expiresIn: "2h",
     });
-
+    const newLecturer = await prisma.supervisors.count();
+    if (newLecturer === 0) {
+      return res.status(300).json({ message: "no supervisors assigned, please try again login in in few minutes." });
+    }
     // Check if the student is already assigned to a supervisor
     const existingAssignment = await prisma.studentSupervisor.findFirst({
       where: { std_id: user.id },
     });
 
-    if (!existingAssignment) {
-      // Find an available supervisor with less than 20 students
-      const availableSupervisor = await prisma.supervisors.findFirst({
-        where: {
-          students: {
-            some: {
-              std_id: { not: null },
-            },
-          },
-        },
-        include: {
-          students: true, // Include student-supervisor relationships
-        },
-        orderBy: {
-          students: { _count: "asc" }, // Prioritize supervisors with the fewest students
+    if (existingAssignment) {
+      // Student already has a supervisor, just return login success
+      return res.status(200).json({
+        message: "Login successful. Supervisor already assigned.",
+        user: { id: user.id, matric_no: user.matric_number, logbook_id:user.logbooks },
+        token,
+      });
+    }
+    // Assign supervisor if not already assigned
+    const supervisors = await prisma.supervisors.findMany({
+      include: {
+        students: true
+      },
+      orderBy: {
+        students: {
+          _count: 'asc'
+        }
+      }
+    });
+    const availableSupervisor = supervisors.find(s => s.students.length < 20);
+    if (availableSupervisor && availableSupervisor.students.length < 20) {
+      await prisma.studentSupervisor.create({
+        data: {
+          std_id: user.id,
+          supervisor_id: availableSupervisor.PK, // Use supervisor's PK
         },
       });
-
-      // Ensure we don't exceed 20 students per supervisor
-      if (availableSupervisor && availableSupervisor.students.length < 20) {
-        // Assign student to the supervisor
-        await prisma.studentSupervisor.create({
-          data: {
-            std_id: user.id,
-            supervisor_id: availableSupervisor.PK, // Use supervisor's PK
-          },
-        });
-
-        return res.status(201).json({
-          message: "Login successful and supervisor assigned!",
-          token,
-        });
-      }
+      return res.status(201).json({
+        message: "Login successful and supervisor assigned!",
+        user: { id: user.id, matric_no: user.matric_number,logbook_id:user.logbooks  },
+        token,
+      });
     }
-
-    return res.status(200).json({
-      message: "Login successful",
-      user: { id: user.id, matric_no: user.matric_number },
-      token: token,
-    });
+    return res.status(400).json({ message: "No available supervisor found." });
   } catch (error) {
     console.error("Error during login:", error);
     return res.status(500).json({
