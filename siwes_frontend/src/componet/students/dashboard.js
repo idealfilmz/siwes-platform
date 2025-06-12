@@ -20,16 +20,12 @@ export const StudentDashboard = () => {
         {
           method: "GET",
           headers: {
-            "Content-Type": "application/json", // Add content type header
+            "Content-Type": "application/json", 
           },
         }
       );
-
-      const data = await response.json(); // Await the response JSON
-
+      const data = await response.json(); 
       if (!response.ok) {
-        // If the response is not OK, show the message
-
         return;
       }
       setData(data);

@@ -15,7 +15,7 @@ const lecturerApis = require("./Apis/lecturerApis");
 const loginOnly = require("./Apis/authentications/loginonly");
 const student_api = require("../siwes_backend/Apis/studentsApis")
 const fileHoder = require("../siwes_backend/Apis/files_handler")
-// const processors = require("../siwes_backend/Apis/q_a_processors/q.a")
+const processors = require("../siwes_backend/Apis/q_a_processors/q.a")
 const app = express();
 const corsOptions = {
   origin: "http://localhost:3000", // Specify the exact origin you want to allow
@@ -35,6 +35,7 @@ app.use("/", lecturerApis);
 app.use("/api", loginOnly);
 app.use("/api", dashboard);
 app.use("/", fileHoder);
+app.use('/api', processors)
 
 app.use("", student_api);
 

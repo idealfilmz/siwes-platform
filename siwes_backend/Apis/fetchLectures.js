@@ -41,4 +41,6 @@ router.get("/fetch-lecture", async (req, res) => {
   }
 });
 
+
+
 module.exports = router;
