@@ -1,10 +1,8 @@
 require("dotenv").config();
-const { GoogleGenerativeAI } = require("@google/generative-ai");
 const express = require("express");
 const prisma = require("../../client");
 const router = express.Router();
 
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
 
 const generateRandomQuestions = (topic, numQuestions = 5) => {
   const questionTemplates = [
