@@ -72,7 +72,7 @@ router.post("/upload-image-data", upload.single("image"), async (req, res) => {
       }
     });
   } catch (e) {
-    console.error(e);
+   
     return res.status(500).json({ message: "Upload failed. Please try again later." });
   }
 });

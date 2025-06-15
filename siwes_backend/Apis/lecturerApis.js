@@ -34,7 +34,7 @@ router.post("/login-lectures", async (req, res) => {
       token: token,
     });
   } catch (error) {
-    console.error("Error during login:", error);
+   
     return res.status(500).json({
       message: "An error occurred during login.",
       data: error,
@@ -76,7 +76,7 @@ router.get("/fetch-lecture", async (req, res) => {
 
     res.json(students);
   } catch (error) {
-    console.error(error);
+   
     res.status(500).json({ error: "Internal server error" });
   }
 });

@@ -30,10 +30,10 @@ router.get("/fetchdetails", async (req, res) => {
       },
       
     });
-    console.log(Getdetails)
+    
     return res.status(200).json({ message: "Fetched succesfully", data: Getdetails, supeervisor:Getdetails.supervisors });
   } catch (err) {
-    console.log(err);
+ 
     return res.status(500).json({ message: "Message fetched error" });
   }
 });

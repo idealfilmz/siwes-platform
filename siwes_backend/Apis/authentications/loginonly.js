@@ -77,7 +77,7 @@ router.post("/login", async (req, res) => {
     }
     return res.status(400).json({ message: "No available supervisor found." });
   } catch (error) {
-    console.error("Error during login:", error);
+
     return res.status(500).json({
       message: "An error occurred during login.",
       data: error,

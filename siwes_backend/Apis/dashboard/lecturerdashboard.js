@@ -20,7 +20,7 @@ router.get("/lecturer-details", async (req, res) => {
 
     res.json(lecturer);
   } catch (error) {
-    console.error("Error fetching lecturer details:", error);
+   
     res.status(500).json({ message: "Error processing request" });
   }
 });
@@ -49,7 +49,7 @@ router.get("/lecturer-std", async (req, res) => {
 
     res.json(students.map((studentSupervisor) => studentSupervisor.student));
   } catch (error) {
-    console.error("Error fetching students:", error);
+   
     res.status(500).json({ message: "Error processing request" });
   }
 });
@@ -85,7 +85,7 @@ router.get("/student-details", async (req, res) => {
 
     res.json(student);
   } catch (error) {
-    console.error("Error fetching student details:", error);
+  
     res.status(500).json({ message: "Error processing request" });
   }
 });

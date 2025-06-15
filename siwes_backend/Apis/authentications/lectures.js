@@ -11,8 +11,6 @@ const generateRandomNumbers = (count) => {
   }
   return randomNumbers;
 };
-
-// Define the sendEmail function
 const sendEmail = async (email, uniqueKey) => {
   let transporter = nodemailer.createTransport({
     service: "gmail",
@@ -66,7 +64,7 @@ router.post("/create-lecture", async (req, res) => {
       message: "Your staff_id has been sent to your registered mail",
     });
   } catch (error) {
-    console.error("Error creating account:", error);
+  
     res
       .status(500)
       .json({ message: "An error occurred CREATING ACCOUNT", data: error });

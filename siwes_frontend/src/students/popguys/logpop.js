@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 
+import { useNavigate } from "react-router-dom";
+
 export const Logbookpop = ({ is_active, is_close }) => {
     const [establishmnt, setEstablishment] = useState("");
     const [institution, setInstitution] = useState("");
     const [address, setAddress] = useState("");
     const _id = localStorage.getItem("id");
-
+    const navigate = useNavigate();
+    
     const upload = async () => {
         if (!establishmnt || !institution || !address) {
             return alert("please fill the update");
@@ -119,7 +122,7 @@ export const Logbookpop = ({ is_active, is_close }) => {
                         fontWeight: "bold"
                     }}
                 >
-                    Upload
+                    Start...
                 </button>
             </div>
         </div>

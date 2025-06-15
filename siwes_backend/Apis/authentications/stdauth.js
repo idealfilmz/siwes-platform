@@ -54,7 +54,7 @@ router.post("/create-account", async (req, res) => {
       .status(201)
       .json({ message: "student created succesfully ", });
   } catch (error) {
-    console.error("Error:", error);
+   
     res.status(500).json({ message: "Error processing request" });
   }
 });
@@ -142,7 +142,7 @@ router.get("/get-supervisor-details", async (req, res, next) => {
 
     res.json(studentSupervisor.supervisor);
   } catch (error) {
-    console.error("Error:", error);
+    
     res.status(500).json({ message: "Error processing request" });
   }
 });

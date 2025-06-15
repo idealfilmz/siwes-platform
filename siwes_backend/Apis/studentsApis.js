@@ -43,9 +43,6 @@ router.get("/fetch-all-anounve", async (req, res) => {
     }
 });
 
-
-
-
 router.get("/get-logbook", async (req, res, next) => {
     const { std_id } = req.query;
     try {
@@ -64,7 +61,7 @@ router.get("/get-logbook", async (req, res, next) => {
         
     }
     catch (e) {
-        console.log(e)
+      
         return res.status(400).json({ message: "kindly retry again" })
     }
 
@@ -73,9 +70,8 @@ router.get("/get-logbook", async (req, res, next) => {
 
 router.post("/weekly-base", async (req, res) => {
     const { progress, logbook_id } = req.body;
-
     try {
-        // 1. Get all weekly entries for this logbook
+      
         const weeklyEntries = await prisma.weekly.findMany({
             where: { logbook_id: Number(logbook_id) },
             orderBy: { createdAt: 'desc' }
@@ -111,7 +107,7 @@ router.post("/weekly-base", async (req, res) => {
 
         return res.status(201).json({ message: "Weekly progress uploaded!", data: newProgress });
     } catch (e) {
-        console.error(e);
+       
         return res.status(500).json({ message: "An error occurred." });
     }
 });

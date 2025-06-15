@@ -35,12 +35,10 @@ function App() {
           <Route path="supervisor-login" element={<Login />} />
           <Route path="/supervisor" element={<SupervisorBar />}>
             <Route path="view" element={<LecturerOverview />} />
-
             <Route path="" element={<LecturerDashboard />} />
           </Route>
           <Route path="*" element={<Notfound />} />
           {/* Student dashboard */}
-
           {/* mutiplex */}
           <Route path="/side" element={<MultiLevelSidebar />}>
             <Route path="" element={<StudentDashboard />} />

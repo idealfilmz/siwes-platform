@@ -14,7 +14,6 @@ export const WeekLyName = () => {
   const [openpop, seClosePop] = useState(false)
 
 
-
   async function fetchLogbook() {
     try {
       const response = await fetch(`http://127.0.0.1:5000/get-logbook?std_id=${id}`,
@@ -35,7 +34,6 @@ export const WeekLyName = () => {
       }
     } catch (e) {
       setLoading(false)
-
     } finally {
       setLoading(false)
       return
@@ -46,7 +44,14 @@ export const WeekLyName = () => {
     fetchLogbook();
   }, []);
 
-  if (loading) {
+  useEffect(() => {
+  if (!openpop) {
+    fetchLogbook();
+  }
+}, [openpop]);
+
+
+  if (loading && !newId?.data?.id) {
     return (
       <div>
         <h5>Checking....&& creating.... logbook  </h5>
@@ -55,7 +60,6 @@ export const WeekLyName = () => {
       </div>
     )
   }
-
   async function CreateLogbokk() {
     if (progress === "") {
       return alert("Fill up the blank space");
@@ -86,10 +90,6 @@ export const WeekLyName = () => {
       alert("An error occurred. Please try again.");
     }
   }
-
-
-
-
   return (
     <div className="p-4">
       {loading ? (
@@ -117,7 +117,7 @@ export const WeekLyName = () => {
           </button>
         </div>
       )}
-      <Logbookpop is_close={seClosePop} is_active={openpop} />
+      <Logbookpop is_close={()=>seClosePop()} is_active={openpop} />
     </div>
   );
 };

@@ -106,7 +106,7 @@ router.post("/questions", async (req, res) => {
       }
      
  catch (error) {
-    console.error("Error generating content:", error);
+   
     res.status(500).json({ error: "Internal Server Error" });
   }
 

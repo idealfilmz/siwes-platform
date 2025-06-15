@@ -4,6 +4,7 @@ function TextPage() {
     const [data, setData] = useState([]);
     const [answers, setAnswers] = useState({});
     const [question, setQuestions] = useState(null)
+    
     const std_id = localStorage.getItem("id");
 
     const Getdetails = async () => {
@@ -81,7 +82,7 @@ function TextPage() {
         const response = await fetch("http://127.0.0.1:5000/api/answers", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ student_id: std_id, answers, score }), // send score to backend
+            body: JSON.stringify({ student_id: std_id, answers, score }), 
         });
         const result = await response.json();
         alert(result?.message);
