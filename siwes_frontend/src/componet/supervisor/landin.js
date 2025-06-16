@@ -31,10 +31,8 @@ export const LecturerDashboard = () => {
         return;
       }
 
-      // Set lecturer data
       setData(responseData);
 
-      // Filter students who have this lecturer as a supervisor
       const supervisedStudents = responseData.filter((student) =>
         student.supervisors?.some(
           (sup) => sup.supervisor?.PK?.toString() === id
@@ -57,16 +55,38 @@ export const LecturerDashboard = () => {
     setSearchTerm(event.target.value);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("id");
+    localStorage.removeItem("token");
+    navigate("/"); // Redirect to landing page
+  };
+
   const filteredStudents = data2?.filter((student) =>
     student.fullname.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
-<h1 className="text-sm font-bold mb-6 text-right">
-  {data?.[0]?.supervisors?.[0]?.supervisor?.fullname?.toUpperCase()}
-</h1>
+      {/* Header: Welcome message (left) and Logout button (right) */}
+      <div className="flex justify-between items-center mb-4">
+        {/* Welcome Message */}
+        <p className="text-sm">
+          Welcome,{" "}
+          <span className="font-bold">
+            {data?.[0]?.supervisors?.[0]?.supervisor?.fullname?.toUpperCase()}
+          </span>
+        </p>
 
+        {/* Logout Button */}
+        <button
+          onClick={handleLogout}
+          className="text-sm bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
+        >
+          Logout
+        </button>
+      </div>
+
+      {/* Search Input */}
       <div className="mb-4">
         <input
           type="text"
@@ -77,6 +97,7 @@ export const LecturerDashboard = () => {
         />
       </div>
 
+      {/* Student Table */}
       <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
         <thead>
           <tr className="bg-gray-200 text-gray-700">
@@ -100,7 +121,7 @@ export const LecturerDashboard = () => {
               <td className="p-3 border-b">{student.establishment}</td>
               <td className="p-3 border-b">
                 <button
-                  onClick={() => navigate("view",{state:student.id})}
+                  onClick={() => navigate("view", { state: student.id })}
                   className="bg-blue-500 text-white px-4 py-2 rounded-md"
                 >
                   View
