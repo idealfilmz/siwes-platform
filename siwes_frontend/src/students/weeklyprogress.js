@@ -3,103 +3,89 @@ import { FaSpinner } from "react-icons/fa";
 import { Logbookpop } from "./popguys/logpop";
 
 export const WeekLyName = () => {
-  const date = new Date();
+  const [logbook, setLogbook] = useState(null);
+  const [progress, setProgress] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [showLogbookPopup, setShowLogbookPopup] = useState(false);
 
   const id = localStorage.getItem("id");
 
-  const weekly = date.getDay();
-  const [progress, setProgress] = useState("");
-  const [newId, setId] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [openpop, seClosePop] = useState(false)
-
-
-  async function fetchLogbook() {
+  // Fetch logbook data
+  const fetchLogbook = async () => {
+    setLoading(true);
     try {
-      const response = await fetch(`http://127.0.0.1:5000/get-logbook?std_id=${id}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-        }
-      );
+      const response = await fetch(`http://127.0.0.1:5000/get-logbook?std_id=${id}`);
       const data = await response.json();
-      setId(data);
-      if (response.status === 300) {
-        setLoading(false)
-        seClosePop(!openpop);
-        return;
+      if (response.status === 200 && data?.data?.id) {
+        setLogbook(data.data);
+      } else {
+        setLogbook(null);
+        setShowLogbookPopup(true); // Open popup if no logbook
       }
-    } catch (e) {
-      setLoading(false)
+    } catch {
+      setLogbook(null);
     } finally {
-      setLoading(false)
-      return
-        ;
+      setLoading(false);
     }
-  }
+  };
+
   useEffect(() => {
     fetchLogbook();
+    // eslint-disable-next-line
   }, []);
 
+  // Refresh logbook after popup closes
   useEffect(() => {
-  if (!openpop) {
-    fetchLogbook();
-  }
-}, [openpop]);
-
-
-  if (loading && !newId?.data?.id) {
-    return (
-      <div>
-        <h5>Checking....&& creating.... logbook  </h5>
-        <p>Please wait....</p>
-        <FaSpinner className='animate-spin' />
-      </div>
-    )
-  }
-  async function CreateLogbokk() {
-    if (progress === "") {
-      return alert("Fill up the blank space");
+    if (!showLogbookPopup) {
+      fetchLogbook();
     }
-    if (!newId?.data?.id) {
-      return alert("Logbook not found. Please create your logbook first.");
-    }
+    // eslint-disable-next-line
+  }, [showLogbookPopup]);
+
+  // Handle weekly progress submission
+  const handleSubmit = async () => {
+    if (!progress) return alert("Fill up the blank space");
+    if (!logbook?.id) return alert("Logbook not found. Please create your logbook first.");
+    setLoading(true);
     try {
       const response = await fetch("http://127.0.0.1:5000/weekly-base", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          progress,
-          logbook_id: newId.data.id,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ progress, logbook_id: logbook.id }),
       });
       const data = await response.json();
       if (response.ok) {
         alert(data.message || "Weekly progress uploaded!");
-        setProgress(""); // Clear textarea
-        fetchLogbook();  // Optionally refresh logbook info
+        setProgress("");
+        fetchLogbook();
       } else {
         alert(data.message || "Upload failed.");
       }
-    } catch (e) {
+    } catch {
       alert("An error occurred. Please try again.");
     }
+    setLoading(false);
+  };
+
+  // UI
+  if (loading && !logbook) {
+    return (
+      <div>
+        <h5>Checking... & creating... logbook</h5>
+        <p>Please wait...</p>
+        <FaSpinner className="animate-spin" />
+      </div>
+    );
   }
+
   return (
     <div className="p-4">
-      {loading ? (
-        <FaSpinner className="animate-spin" />
-      ) : (
+      <Logbookpop is_close={() => setShowLogbookPopup(false)} is_active={showLogbookPopup} />
+      {!logbook ? null : (
         <div>
           <div className="bg-blue-100 border border-blue-200 rounded-lg p-4 mb-4">
             <marquee className="text-center text-blue-600 text-lg font-semibold">
-              Welcome to weekly Progress Input, please input this week's
-              progress bellow:
+              Welcome to weekly Progress Input, please input this week's progress below:
             </marquee>
           </div>
           <textarea
@@ -107,17 +93,18 @@ export const WeekLyName = () => {
             onChange={(e) => setProgress(e.target.value)}
             placeholder="Enter week's progress..."
             className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            rows="20" // Adjust the number of rows as needed
+            rows="10"
+            disabled={loading}
           />
           <button
-            onClick={CreateLogbokk}
+            onClick={handleSubmit}
             className="p-2 m-1 bg-blue-700 text-white rounded-lg shadow-md"
+            disabled={loading}
           >
-            Submit
+            {loading ? <FaSpinner className="animate-spin" /> : "Submit"}
           </button>
         </div>
       )}
-      <Logbookpop is_close={()=>seClosePop()} is_active={openpop} />
     </div>
   );
 };

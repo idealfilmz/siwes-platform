@@ -1,12 +1,12 @@
 
-
-
-
 import React from "react";
 import { Outlet } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export function SupervisorBar() {
   const [open, setOpen] = React.useState(0);
+  const navigate = useNavigate()
+
 
   const handleOpen = (value) => {
     setOpen(open === value ? 0 : value);
@@ -75,6 +75,13 @@ export function SupervisorBar() {
               </a>
             </li>
           </ul>
+          <button onClick={()=>{
+           localStorage.clear();
+           navigate("/");
+
+          }} className="p-1 bg-gray-500 rounded-md text-white absolute bottom-6">
+            Logout
+          </button>
         </div>
       </aside>
 

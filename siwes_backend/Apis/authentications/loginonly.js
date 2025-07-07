@@ -20,11 +20,9 @@ router.post("/login", async (req, res) => {
       }
     });
     if (!user) {
-      return res.status(404).json({ message: "Can't find user" });
+      return res.status(404).json({ message: "Account not found!. please create account" });
     }
-
     const isMatch = await bcrypt.compare(password, user.password);
-
     if (!isMatch) {
       return res
         .status(403)
@@ -43,7 +41,6 @@ router.post("/login", async (req, res) => {
     });
 
     if (existingAssignment) {
-      // Student already has a supervisor, just return login success
       return res.status(200).json({
         message: "Login successful. Supervisor already assigned.",
         user: { id: user.id, matric_no: user.matric_number, logbook_id:user.logbooks },
@@ -77,7 +74,7 @@ router.post("/login", async (req, res) => {
     }
     return res.status(400).json({ message: "No available supervisor found." });
   } catch (error) {
-
+console.log(error)
     return res.status(500).json({
       message: "An error occurred during login.",
       data: error,

@@ -35,11 +35,11 @@ router.post("/create-lecture", async (req, res) => {
   try {
     const neArr = email.split("@");
     if (neArr[1] !== "unilorin.edu.ng") {
-      res.status(400).json({ message: "Email not identified" });
+      res.status(400).json({ message: "Lecturer Email not identified," });
       return;
     }
     if (email.split(".")[0] !== fullname.split(" ")[0]) {
-      res.status(400).json({ message: "Staff not recognized" });
+      res.status(400).json({ message: "Staff not recognized, ,use your staff email" });
       return;
     }
     if (!email || !phone_number || !fullname || !password) {
