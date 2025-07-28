@@ -50,38 +50,33 @@ router.post("/create-account", async (req, res) => {
         phone_number,
       },
     });
-    return res
-      .status(201)
-      .json({ message: "student created succesfully ", });
+    return res.status(201).json({ message: "student created succesfully " });
   } catch (error) {
-   
+    console.log(error);
     res.status(500).json({ message: "Error processing request" });
   }
 });
 
-router.get("/verify/", async(req, res, next) => {
-  const {id} = req.query;
+router.get("/verify/", async (req, res, next) => {
+  const { id } = req.query;
   try {
-
     const checkuser = await prisma.logbook.findMany({
-      where:{id:id}
+      where: { id: id },
+    });
 
-    }) 
-
-    if(checkuser.length === 0){
+    if (checkuser.length === 0) {
       return res.status(401).json({ message: "nothing found", data: null });
     }
 
-
-    return res.status(200).json({message:"fetched succesfully", data:checkuser})
-
+    return res
+      .status(200)
+      .json({ message: "fetched succesfully", data: checkuser });
   } catch {
     return res
       .status(400)
       .json({ messsage: "something went wrong!", data: null });
   }
 });
-
 
 router.post("/create-logbook", async (req, res) => {
   const { establishment, institution, address, student_id } = req.body;
@@ -142,7 +137,6 @@ router.get("/get-supervisor-details", async (req, res, next) => {
 
     res.json(studentSupervisor.supervisor);
   } catch (error) {
-    
     res.status(500).json({ message: "Error processing request" });
   }
 });
