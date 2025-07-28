@@ -17,6 +17,7 @@ import { Login } from "./Authenications/login";
 import { Upload } from "./componet/students/upload";
 import { SignUp } from "./supervisor_login/supervisorSignUp";
 import TextPage from "./students/text";
+import { Logbookpop } from "./students/popguys/logpop";
 
 function App() {
   return (
@@ -28,7 +29,6 @@ function App() {
           <Route path="/register" element={<Register />} />
           {/* stand alone */}
           <Route path="nav" element={<BottomNav />} />
-
           <Route path="/newpage" element={<NewPage />} />
           <Route path="/login" element={<SupLogin />} />
           <Route path="/signup" element={<SignUp />} />
@@ -45,7 +45,7 @@ function App() {
             <Route path="upload" element={<Upload />} />
             <Route path="wekk" element={<WeekLyName />} />
             <Route path="test" element={<TextPage />} />
-
+            <Route path="pop" element= {<Logbookpop />} />
           </Route>
         </Routes>
       </div>

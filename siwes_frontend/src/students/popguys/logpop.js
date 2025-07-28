@@ -2,10 +2,11 @@ import React, { useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 
-export const Logbookpop = ({ is_active, is_close }) => {
+export const Logbookpop = () => {
     const [establishmnt, setEstablishment] = useState("");
     const [institution, setInstitution] = useState("");
     const [address, setAddress] = useState("");
+    const [isclose, setIsclose] = useState(true)
     const _id = localStorage.getItem("id");
     const navigate = useNavigate();
     
@@ -28,16 +29,16 @@ export const Logbookpop = ({ is_active, is_close }) => {
                 })
             });
             const data = await response.json();
+            setIsclose(false)
+            navigate('/side/wekk')
             alert(data?.message || "Response received");
-            if (response.ok && is_close) is_close();
         } catch {
-            alert("An error occurred");
+            alert("An error occurred try again");
         }
     };
 
-    if (!is_active) return null;
-
     return (
+
         <div style={{
             position: "fixed",
             top: 0, left: 0, right: 0, bottom: 0,
@@ -47,7 +48,10 @@ export const Logbookpop = ({ is_active, is_close }) => {
             justifyContent: "center",
             zIndex: 1000
         }}>
-            <div style={{
+         
+
+            {isclose &&(
+             <div style={{
                 background: "white",
                 padding: 32,
                 borderRadius: 8,
@@ -56,9 +60,17 @@ export const Logbookpop = ({ is_active, is_close }) => {
                 boxShadow: "0 2px 16px rgba(0,0,0,0.2)",
                 position: "relative"
             }}>
+                   <p style={{
+                    color:"red",
+                    fontSize:14,
+                    alignItems:"center"
+                   }}>You need to create a logbook to continue.</p>
+
                 <button
-                    onClick={is_close}
-                    style={{
+                onClick={()=>{
+                    setIsclose(false)
+                }}
+                     style={{
                         position: "absolute",
                         top: 8,
                         right: 8,
@@ -125,6 +137,9 @@ export const Logbookpop = ({ is_active, is_close }) => {
                     Start...
                 </button>
             </div>
+
+            )}
+           
         </div>
     );
 };
