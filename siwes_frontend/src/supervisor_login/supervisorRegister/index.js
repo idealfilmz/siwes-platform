@@ -20,7 +20,6 @@ export const Register = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Handle registration logic here
     console.log("Form Data:", formData);
   };
 

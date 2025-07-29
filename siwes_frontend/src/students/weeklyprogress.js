@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { FaSpinner } from "react-icons/fa";
 import { Logbookpop } from "./popguys/logpop";
+import { useNavigate } from "react-router-dom";
 
 export const WeekLyName = () => {
   const [logbook, setLogbook] = useState(null);
   const [progress, setProgress] = useState("");
   const [loading, setLoading] = useState(true);
   const [showLogbookPopup, setShowLogbookPopup] = useState(false);
+  const navigation  = useNavigate()
 
   const id = localStorage.getItem("id");
 
@@ -19,8 +21,7 @@ export const WeekLyName = () => {
       if (response.status === 200 && data?.data?.id) {
         setLogbook(data.data);
       } else {
-        setLogbook(null);
-        setShowLogbookPopup(true); // Open popup if no logbook
+        navigation("/side/pop")
       }
     } catch {
       setLogbook(null);
@@ -34,7 +35,6 @@ export const WeekLyName = () => {
     // eslint-disable-next-line
   }, []);
 
-  // Refresh logbook after popup closes
   useEffect(() => {
     if (!showLogbookPopup) {
       fetchLogbook();
@@ -42,7 +42,6 @@ export const WeekLyName = () => {
     // eslint-disable-next-line
   }, [showLogbookPopup]);
 
-  // Handle weekly progress submission
   const handleSubmit = async () => {
     if (!progress) return alert("Fill up the blank space");
     if (!logbook?.id) return alert("Logbook not found. Please create your logbook first.");
@@ -80,31 +79,30 @@ export const WeekLyName = () => {
 
   return (
     <div className="p-4">
-      <Logbookpop is_close={() => setShowLogbookPopup(false)} is_active={showLogbookPopup} />
-      {!logbook ? null : (
-        <div>
-          <div className="bg-blue-100 border border-blue-200 rounded-lg p-4 mb-4">
-            <marquee className="text-center text-blue-600 text-lg font-semibold">
-              Welcome to weekly Progress Input, please input this week's progress below:
-            </marquee>
-          </div>
-          <textarea
-            value={progress}
-            onChange={(e) => setProgress(e.target.value)}
-            placeholder="Enter week's progress..."
-            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            rows="10"
-            disabled={loading}
-          />
-          <button
-            onClick={handleSubmit}
-            className="p-2 m-1 bg-blue-700 text-white rounded-lg shadow-md"
-            disabled={loading}
-          >
-            {loading ? <FaSpinner className="animate-spin" /> : "Submit"}
-          </button>
+
+      <div>
+        <div className="bg-blue-100 border border-blue-200 rounded-lg p-4 mb-4">
+          <marquee className="text-center text-blue-600 text-lg font-semibold">
+            Welcome to weekly Progress Input, please input this week's progress below:
+          </marquee>
         </div>
-      )}
+        <textarea
+          value={progress}
+          onChange={(e) => setProgress(e.target.value)}
+          placeholder="Enter week's progress..."
+          className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          rows="10"
+          disabled={loading}
+        />
+        <button
+          onClick={handleSubmit}
+          className="p-2 m-1 bg-blue-700 text-white rounded-lg shadow-md"
+          disabled={loading}
+        >
+          {loading ? <FaSpinner className="animate-spin" /> : "Submit"}
+        </button>
+      </div>
+
     </div>
   );
 };

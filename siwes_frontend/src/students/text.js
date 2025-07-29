@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function TextPage() {
     const [data, setData] = useState([]);
     const [answers, setAnswers] = useState({});
     const [question, setQuestions] = useState(null)
+
+    const navigate = useNavigate();
     
     const std_id = localStorage.getItem("id");
 
@@ -17,6 +20,7 @@ function TextPage() {
             });
             const result = await response.json();
             if (response.status === 200 && Array.isArray(result.data)) {
+              
                 setData(result.data);
             } else {
                 alert(result?.message || "please try again");
@@ -70,7 +74,6 @@ function TextPage() {
         const proceed = window.confirm("You haven't answered all questions. Submit anyway?");
         if (!proceed) return;
     }
-
     let score = 0;
     question.forEach(q => {
         if (answers[q.id] === q.answer) {
@@ -86,6 +89,7 @@ function TextPage() {
         });
         const result = await response.json();
         alert(result?.message);
+        navigate("/")
     } catch (error) {
         console.error("Error submitting answers:", error);
         alert("Failed to submit answers.");
