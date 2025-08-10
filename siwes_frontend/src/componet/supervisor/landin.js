@@ -16,7 +16,7 @@ export const LecturerDashboard = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `http://127.0.0.1:5000/fetch-lecture?id=${1}`,
+        `http://127.0.0.1:3000/fetch-lecture?id=${1}`,
         {
           method: "GET",
           headers: {
@@ -132,7 +132,8 @@ export const LecturerDashboard = () => {
           {filteredStudents.length === 0 && (
             <tr>
               <td colSpan="7" className="text-center p-4 text-gray-500">
-               Please hold on while student register, student under you will automaticay appears here.
+                Please hold on while student register, student under you will
+                automaticay appears here.
               </td>
             </tr>
           )}
